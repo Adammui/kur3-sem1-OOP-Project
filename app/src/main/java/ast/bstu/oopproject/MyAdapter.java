@@ -22,11 +22,11 @@ public class MyAdapter extends BaseAdapter {
     ArrayList<String> objects;
     ArrayList<String> pics;
     ArrayList<String> ids;
-    MyAdapter(Context context, ArrayList<String> events,ArrayList<String> id ){//, ArrayList<String> pic) {
+    MyAdapter(Context context, ArrayList<String> events,ArrayList<String> id , ArrayList<String> pic) {
         ctx = context;
         objects = events;
         ids=id;
-        //pics=pic;
+        pics=pic;
         lInflater = (LayoutInflater) ctx.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -52,25 +52,15 @@ public class MyAdapter extends BaseAdapter {
         if (view == null) {
             view = lInflater.inflate(R.layout.list_item, parent, false);
         }
-        //Log.d("",pics.get(position));
-        //Uri imageUri = Uri.parse(pics.get(position));
-        //Bitmap bitmap = null;
+        Log.d("",pics.get(position));
+        Uri imageUri = Uri.parse(pics.get(position));
+        Bitmap bitmap = null;
         ((TextView) view.findViewById(R.id.text_item)).setText(objects.get(position));
         ((TextView) view.findViewById(R.id.text_id)).setText(ids.get(position));
-        //((ImageView) view.findViewById(R.id.img)).setImageURI(Uri.parse(pics.get(position)));
+        ((ImageView) view.findViewById(R.id.img)).setImageURI(Uri.parse(pics.get(position)));
 
         LinearLayout l= view.findViewById(R.id.list_item);
 
-       /*l.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                TextView t = view.findViewById(R.id.text_id);
-                int strText = Integer.parseInt(t.getText().toString());
-                Log.d("e", ""+ strText);
-                Intent intent1 =new Intent(view.getContext(), AddActivity.class);
-                intent1.putExtra("id_event", strText);
-                ctx.startActivity(intent1);
-            }
-        });*/
         return view;
     }
 

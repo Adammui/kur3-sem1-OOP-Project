@@ -26,6 +26,16 @@
                 android:maxLength="30"
                 android:hint="Название мероприятия" />
         </com.google.android.material.textfield.TextInputLayout>
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+        <Button
+            android:id="@+id/pick"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Загрузить картинку" />
+    </LinearLayout>
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -129,13 +139,25 @@
                 android:gravity="right"
                 android:text="Высокий" />
         </LinearLayout>
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <Button
+            android:id="@+id/buttonrgr"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:onClick="del"
+            android:visibility="gone"
+            android:text="X" />
         <Button
             android:id="@+id/button"
             android:layout_width="match_parent"
+            android:layout_marginLeft="10dp"
             android:layout_height="wrap_content"
             android:onClick="save"
             android:text="Сохранить" />
+    </LinearLayout>
     </LinearLayout>
 </ScrollView>
 

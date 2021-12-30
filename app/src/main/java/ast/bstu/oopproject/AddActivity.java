@@ -1,19 +1,26 @@
 package ast.bstu.oopproject;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.location.Address;
 import android.location.Geocoder;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.Spinner;
@@ -28,8 +35,17 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.material.textfield.TextInputEditText;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Objects;
+import androidx.appcompat.app.AppCompatActivity;
+import android.content.Intent;
+import android.net.Uri;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
 
 public class AddActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -44,10 +60,13 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
     int mode=1; //1= add mode, 0= edit mode
     GoogleMap mMap;
     LinearLayout mapfragment;
-
+    private final int Pick_image = 1;
+    ImageView imageView;
+    String imguri;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        imageView= findViewById(R.id.image);
         setContentView(R.layout.activity_add);
         title= findViewById(R.id.title);
         category= findViewById(R.id.category);
@@ -60,13 +79,20 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
         mapfragment = findViewById(R.id.fragment_lay);
         db = new DbHelper(getApplicationContext()).getReadableDatabase();
 
-
+        Button PickImage = (Button) findViewById(R.id.pick);
+        PickImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+                photoPickerIntent.setType("image/*");
+                startActivityForResult(photoPickerIntent, Pick_image);
+            }
+        });
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-
         try
         {
             Bundle arg = getIntent().getExtras();
@@ -83,6 +109,8 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
                 price.setEnabled(false);
                 date.setEnabled(false);
                 mapfragment.setVisibility(View.VISIBLE);
+                Button b=findViewById(R.id.buttonrgr);
+                b.setVisibility(View.VISIBLE);
                 SQLiteDatabase db = new DbHelper(getApplicationContext()).getReadableDatabase();
                 Cursor cursor = DbEvent.findbyid(db, id_event);
                 while (cursor.moveToNext()) {
@@ -104,6 +132,25 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
+        super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
+
+        switch (requestCode) {
+            case Pick_image:
+                if (resultCode == RESULT_OK) {
+
+                    // compare the resultCode with the
+                    // SELECT_PICTURE constant
+                        // Get the url of the image from data
+                        Uri selectedImageUri = imageReturnedIntent.getData();
+                        if (null != selectedImageUri) {
+                            // update the preview image in the layout
+                            imguri= selectedImageUri.toString();
+                        }
+                }
+        }
+    }
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
@@ -144,7 +191,7 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
             ex.printStackTrace();
         }
 
-        EventModel event = new EventModel(Objects.requireNonNull(title.getText()).toString(), Objects.requireNonNull(category.getText()).toString(),
+        EventModel event = new EventModel(Objects.requireNonNull(title.getText()).toString(),imguri, Objects.requireNonNull(category.getText()).toString(),
                 Objects.requireNonNull(address.getText()).toString(),p1.latitude,p1.longitude, Objects.requireNonNull(price.getText()).toString(),
                 Objects.requireNonNull(date.getText()).toString(), Objects.requireNonNull(note.getText()).toString(),pr.getProgress());
         if(DbEvent.add(db, event) != -1) {
@@ -162,6 +209,38 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
             Toast.makeText(this, String.valueOf(pr.getProgress())+ "Изменено", Toast.LENGTH_SHORT).show();
             Intent intent =new Intent(this, MainActivity.class);
             startActivity(intent);
+        }
+        catch (SQLException ex)
+        {
+            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+    }
+    public void del(View view){
+        try{
+            AlertDialog myQuittingDialogBox = new AlertDialog.Builder(this)
+                    // set message, title, and icon
+                    .setTitle("Delete")
+                    .setMessage("Do you want to Delete")
+
+                    .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            SQLiteDatabase db = new DbHelper(getApplicationContext()).getWritableDatabase();;
+                            DbEvent.deleteById(db,id_event);
+                            Toast.makeText(AddActivity.this, String.valueOf(pr.getProgress())+ "Изменено", Toast.LENGTH_SHORT).show();
+                            Intent intent =new Intent(AddActivity.this, MainActivity.class);
+                            startActivity(intent);
+                            dialog.dismiss();
+                        }
+                    })
+                    .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+
+                            dialog.dismiss();
+
+                        }
+                    })
+                    .show();
         }
         catch (SQLException ex)
         {

@@ -1,10 +1,12 @@
 package ast.bstu.oopproject;
 
+import android.Manifest;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
@@ -24,6 +26,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NotificationCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
 
     public ArrayList<String> titleList = new ArrayList<>();
     public ArrayList<String> idList = new ArrayList<>();
+    public ArrayList<String> imgList = new ArrayList<>();
     private ListView mListView;
     private ActivityMainBinding binding;
     String date1;
@@ -55,6 +59,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) ==
+                PackageManager.PERMISSION_DENIED) {
+            requestPermissions(new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+            finish();
+        }
         mListView = findViewById(R.id.list_view);
         registerForContextMenu(mListView);
         binding = ActivityMainBinding.inflate(getLayoutInflater());
@@ -68,11 +77,12 @@ public class MainActivity extends AppCompatActivity {
                 (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         titleList.clear();idList.clear();
 
-        SQLiteDatabase db = new DbHelper(getApplicationContext()).getReadableDatabase();
+        SQLiteDatabase db = new DbHelper(getApplicationContext()).getWritableDatabase();
         Cursor cursor = DbEvent.getAll(db);
         while (cursor.moveToNext()) {
             titleList.add(cursor.getString(cursor.getColumnIndexOrThrow("title")));
             idList.add(cursor.getString(cursor.getColumnIndexOrThrow("id_event")));
+            imgList.add(cursor.getString(cursor.getColumnIndexOrThrow("imguri")));
             date1= cursor.getString(cursor.getColumnIndexOrThrow("date"));
             String date2= dtf.format(now);
             Log.d("",""+date2+ date1);
@@ -84,25 +94,32 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-
-        MyAdapter adapter = new MyAdapter(this, titleList, idList);
-        mListView.setAdapter(adapter);
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
-
-                TextView t = view.findViewById(R.id.text_id);
-                int strText = Integer.parseInt(t.getText().toString());
-                Log.d("e", ""+ strText);
-                Intent intent1 =new Intent(view.getContext(), AddActivity.class);
-                intent1.putExtra("id_event", strText);
-                intent1.putExtra("mode", 0);
-                startActivity(intent1);
-            }
-        });
+        start();
     }
+    @Override
+    protected void onResume() {
+        super.onStart();
+        start();
+    }
+private void start()
+{
+    MyAdapter adapter = new MyAdapter(this, titleList, idList, imgList);
+    mListView.setAdapter(adapter);
+    mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
+        @Override
+        public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
+
+            TextView t = view.findViewById(R.id.text_id);
+            int strText = Integer.parseInt(t.getText().toString());
+            Log.d("e", ""+ strText);
+            Intent intent1 =new Intent(view.getContext(), AddActivity.class);
+            intent1.putExtra("id_event", strText);
+            intent1.putExtra("mode", 0);
+            startActivity(intent1);
+        }
+    });
+}
     public void add(View view)
     {
         /*

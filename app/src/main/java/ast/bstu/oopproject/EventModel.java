@@ -6,6 +6,7 @@ public class EventModel {
 
     private int id;
     private String title;
+    private String imguri;
     private String category;
     private String address;
     private double latitude;
@@ -16,8 +17,9 @@ public class EventModel {
     private int priority;
     //title , category, address, latitude, longitude, price, date, note, priority
 
-    public EventModel(String title, String category, String address, double latitude, double longitude, String price, String date, String note, int priority) {
+    public EventModel(String title, String imguri, String category, String address, double latitude, double longitude, String price, String date, String note, int priority) {
         this.title = title;
+        this.imguri= imguri;
         this.category = category;
         this.address = address;
         this.latitude = latitude;
@@ -42,6 +44,7 @@ public class EventModel {
     public String category() {
         return category;
     }
+    public String imguri() {return imguri;}
 
     public String address() {
         return address;

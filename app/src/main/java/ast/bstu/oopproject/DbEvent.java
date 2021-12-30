@@ -11,6 +11,7 @@ public class DbEvent {
 
         ContentValues values = new ContentValues();
         values.put("title", ev.title());
+        values.put("imguri", ev.imguri());
         values.put("category", ev.category());
         values.put("address", ev.address());
         values.put("latitude", ev.latitude());
@@ -35,13 +36,14 @@ public class DbEvent {
         return db.rawQuery("select * from " + DbHelper.Events_table + " order by title desc", null);
     }
 
-    public void deleteById(SQLiteDatabase db, int id) {
-        db.rawQuery(" delete from " + DbHelper.Events_table + " where id_event = ? ", new String[]{String.valueOf(id)});
+    public static void deleteById(SQLiteDatabase db, int id) {
+        //db.rawQuery(" delete from " + DbHelper.Events_table + " where id_event = ? ", new String[]{String.valueOf(id)});
+        db.delete(DbHelper.Events_table, "id_event = ?" , new String[]{String.valueOf(id)});
         return;
     }
     public static void editNote(SQLiteDatabase db, int id, String new_note, String new_priority) {
 
-        db.rawQuery(" update " + DbHelper.Events_table + " set note = ?, priority = ? where id_event = ? ", new String[]{ new_note ,new_priority, String.valueOf(id) });
+       // db.rawQuery(" update " + DbHelper.Events_table + " set note = ?, priority = ? where id_event = ? ", new String[]{ new_note ,new_priority, String.valueOf(id) });
         ContentValues cv = new ContentValues();
 
         cv.put("note",new_note);
