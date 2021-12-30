@@ -60,9 +60,7 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
         mapfragment = findViewById(R.id.fragment_lay);
         db = new DbHelper(getApplicationContext()).getReadableDatabase();
 
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_map);
-        mapFragment.getMapAsync(this);
+
     }
 
     @Override
@@ -76,6 +74,9 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
             mode = arg.getInt("mode");
             Toast.makeText(this, id_event+"", Toast.LENGTH_SHORT).show();
             if (mode==0){
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                    .findFragmentById(R.id.fragment_map);
+                mapFragment.getMapAsync(this);
                 title.setEnabled(false);
                 category.setEnabled(false);
                 lay_adress.setVisibility(View.GONE);
@@ -90,7 +91,6 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
                     latitude=cursor.getDouble(cursor.getColumnIndexOrThrow("latitude"));
                     longitude=cursor.getDouble(cursor.getColumnIndexOrThrow("longitude"));
                     Log.d("e",""+longitude);
-                    searchplace();
                     price.setText(cursor.getString(cursor.getColumnIndexOrThrow("price")));
                     date.setText(cursor.getString(cursor.getColumnIndexOrThrow("date")));
                     note.setText(cursor.getString(cursor.getColumnIndexOrThrow("note")));
@@ -100,16 +100,17 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
         }
         catch (Exception ex)
         {
-            Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+           // Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     @Override
     public void onMapReady(@NonNull GoogleMap googleMap) {
         mMap = googleMap;
+        searchplace(latitude, longitude);
 
     }
-    public void searchplace ()
+    public void searchplace (double latitude,double longitude)
     {
         mMap.clear();
         LatLng sydney = new LatLng(latitude, longitude);
@@ -145,7 +146,7 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
 
         EventModel event = new EventModel(Objects.requireNonNull(title.getText()).toString(), Objects.requireNonNull(category.getText()).toString(),
                 Objects.requireNonNull(address.getText()).toString(),p1.latitude,p1.longitude, Objects.requireNonNull(price.getText()).toString(),
-                0, Objects.requireNonNull(note.getText()).toString(),pr.getProgress());
+                Objects.requireNonNull(date.getText()).toString(), Objects.requireNonNull(note.getText()).toString(),pr.getProgress());
         if(DbEvent.add(db, event) != -1) {
             Toast.makeText(this, "Талон заказан", Toast.LENGTH_SHORT).show();
 

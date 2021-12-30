@@ -1,8 +1,13 @@
 package ast.bstu.oopproject;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -25,26 +31,41 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.material.snackbar.Snackbar;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+
+import ast.bstu.oopproject.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
     public ArrayList<String> titleList = new ArrayList<>();
     public ArrayList<String> idList = new ArrayList<>();
     private ListView mListView;
+    private ActivityMainBinding binding;
+    String date1;
+    NotificationManager notificationManager;
+    private static final int NOTIFY_ID = 1;
+    private static final String CHANNEL_ID = "CHANNEL_ID";
+    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd");
+    LocalDateTime now = LocalDateTime.now();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mListView = findViewById(R.id.list_view);
         registerForContextMenu(mListView);
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
+        binding = ActivityMainBinding.inflate(getLayoutInflater());
+        binding.add.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                add(view);
+            }
+        });
+        notificationManager =
+                (NotificationManager) getApplicationContext().getSystemService(Context.NOTIFICATION_SERVICE);
         titleList.clear();idList.clear();
 
         SQLiteDatabase db = new DbHelper(getApplicationContext()).getReadableDatabase();
@@ -52,7 +73,18 @@ public class MainActivity extends AppCompatActivity {
         while (cursor.moveToNext()) {
             titleList.add(cursor.getString(cursor.getColumnIndexOrThrow("title")));
             idList.add(cursor.getString(cursor.getColumnIndexOrThrow("id_event")));
+            date1= cursor.getString(cursor.getColumnIndexOrThrow("date"));
+            String date2= dtf.format(now);
+            Log.d("",""+date2+ date1);
+            if (date1.equals(date2))
+                Notification(date1,cursor.getString(cursor.getColumnIndexOrThrow("title")) );
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
         MyAdapter adapter = new MyAdapter(this, titleList, idList);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -99,6 +131,34 @@ public class MainActivity extends AppCompatActivity {
             TextView r = findViewById(R.id.warn);
             r.setVisibility(View.VISIBLE);
         }*/
+    }
+    public void Notification(String date, String info){
+        Intent intent = new Intent(getApplicationContext(),MainActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(),0,intent,PendingIntent.FLAG_UPDATE_CURRENT);
+        NotificationCompat.Builder notificationBuilder =
+                new NotificationCompat.Builder(getApplicationContext(),CHANNEL_ID)
+                        .setAutoCancel(true)
+                        .setSmallIcon(R.drawable.common_google_signin_btn_icon_light_normal_background)
+                        .setWhen(System.currentTimeMillis())
+                        .setContentIntent(pendingIntent)
+                        .setContentTitle("У вас на сегодня запланировано мероприятие")
+                        .setContentText(date+" У вас "+info);
+        //.setPriority(PRIORITY_HIGH);
+        createChannelIfNeeded(notificationManager);
+        notificationManager.notify(NOTIFY_ID,notificationBuilder.build());
+
+    }
+    public static void createChannelIfNeeded(NotificationManager manager) {
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+
+            NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT);
+
+            manager.createNotificationChannel(notificationChannel);
+
+        }
+
     }
 
 }

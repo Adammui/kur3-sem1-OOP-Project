@@ -11,12 +11,12 @@ public class EventModel {
     private double latitude;
     private double longitude;
     private String price;
-    private double date;
+    private String date;
     private String note;
     private int priority;
     //title , category, address, latitude, longitude, price, date, note, priority
 
-    public EventModel(String title, String category, String address, double latitude, double longitude, String price, double date, String note, int priority) {
+    public EventModel(String title, String category, String address, double latitude, double longitude, String price, String date, String note, int priority) {
         this.title = title;
         this.category = category;
         this.address = address;
@@ -59,7 +59,7 @@ public class EventModel {
         return price;
     }
 
-    public double date() {
+    public String date() {
         return date;
     }
 
