@@ -39,8 +39,18 @@ public class DbEvent {
         db.rawQuery(" delete from " + DbHelper.Events_table + " where id_event = ? ", new String[]{String.valueOf(id)});
         return;
     }
-    public void editNote(SQLiteDatabase db, int id, String new_note) {
-        db.rawQuery(" update " + DbHelper.Events_table + " set note = ? where id_event = ? ", new String[]{ new_note , String.valueOf(id) });
-        return;
+    public static void editNote(SQLiteDatabase db, int id, String new_note, String new_priority) {
+
+        db.rawQuery(" update " + DbHelper.Events_table + " set note = ?, priority = ? where id_event = ? ", new String[]{ new_note ,new_priority, String.valueOf(id) });
+        ContentValues cv = new ContentValues();
+
+        cv.put("note",new_note);
+        cv.put("priority",new_priority);
+        db.update(DbHelper.Events_table,cv,"id_event = ?",new String[]{String.valueOf(id)});
+
+        return ;
+    }
+    public static Cursor findbyid(SQLiteDatabase db, int id) {
+        return db.rawQuery("select * from " + DbHelper.Events_table + " where id_event = ?", new String[]{String.valueOf(id)});
     }
 }

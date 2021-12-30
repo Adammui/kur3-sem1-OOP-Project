@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -26,24 +28,22 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
-    GoogleMap mMap;
+public class MainActivity extends AppCompatActivity {
 
     public ArrayList<String> titleList = new ArrayList<>();
     public ArrayList<String> idList = new ArrayList<>();
-    private ArrayAdapter<String> adapter;
     private ListView mListView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.fragment_map);
-        mapFragment.getMapAsync(this);
-
-
         mListView = findViewById(R.id.list_view);
+        registerForContextMenu(mListView);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
 
         titleList.clear();idList.clear();
 
@@ -51,39 +51,26 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         Cursor cursor = DbEvent.getAll(db);
         while (cursor.moveToNext()) {
             titleList.add(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-            titleList.add(cursor.getString(cursor.getColumnIndexOrThrow("id")));
+            idList.add(cursor.getString(cursor.getColumnIndexOrThrow("id_event")));
         }
-        adapter = new ArrayAdapter<>(this, R.layout.list_item, R.id.text_item, titleList);
+        MyAdapter adapter = new MyAdapter(this, titleList, idList);
         mListView.setAdapter(adapter);
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
+            public void onItemClick(AdapterView<?> arg0, View view, int position, long arg3) {
 
-                Object o = mListView.getItemAtPosition(position);
-
-                Intent intent1 =new Intent(MainActivity.this, AddActivity.class);
-                intent1.putExtra("id_event", (Integer) o);
+                TextView t = view.findViewById(R.id.text_id);
+                int strText = Integer.parseInt(t.getText().toString());
+                Log.d("e", ""+ strText);
+                Intent intent1 =new Intent(view.getContext(), AddActivity.class);
+                intent1.putExtra("id_event", strText);
+                intent1.putExtra("mode", 0);
                 startActivity(intent1);
             }
         });
-
     }
 
-    @Override
-    public void onMapReady(@NonNull GoogleMap googleMap) {
-        mMap = googleMap;
-
-    }
-    public void minsk (View view)
-    {
-        mMap.clear();
-        LatLng sydney = new LatLng(1, 1);
-        MarkerOptions marko= new MarkerOptions();
-        marko.position(sydney);
-        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(sydney, 17));
-        mMap.addMarker(marko);
-    }
     public void add(View view)
     {
         /*
@@ -113,4 +100,5 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             r.setVisibility(View.VISIBLE);
         }*/
     }
+
 }
