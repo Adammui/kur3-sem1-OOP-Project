@@ -89,49 +89,17 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
             }
         });
     }
-
     @Override
     protected void onStart() {
         super.onStart();
-        try
-        {
-            Bundle arg = getIntent().getExtras();
-            id_event = arg.getInt("id_event");
-            mode = arg.getInt("mode");
-            Toast.makeText(this, id_event+"", Toast.LENGTH_SHORT).show();
-            if (mode==0){
-                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                    .findFragmentById(R.id.fragment_map);
-                mapFragment.getMapAsync(this);
-                title.setEnabled(false);
-                category.setEnabled(false);
-                lay_adress.setVisibility(View.GONE);
-                price.setEnabled(false);
-                date.setEnabled(false);
-                mapfragment.setVisibility(View.VISIBLE);
-                Button b=findViewById(R.id.buttonrgr);
-                b.setVisibility(View.VISIBLE);
-                SQLiteDatabase db = new DbHelper(getApplicationContext()).getReadableDatabase();
-                Cursor cursor = DbEvent.findbyid(db, id_event);
-                while (cursor.moveToNext()) {
-                    title.setText(cursor.getString(cursor.getColumnIndexOrThrow("title")));
-                    category.setText(cursor.getString(cursor.getColumnIndexOrThrow("category")));
-                    latitude=cursor.getDouble(cursor.getColumnIndexOrThrow("latitude"));
-                    longitude=cursor.getDouble(cursor.getColumnIndexOrThrow("longitude"));
-                    Log.d("e",""+longitude);
-                    price.setText(cursor.getString(cursor.getColumnIndexOrThrow("price")));
-                    date.setText(cursor.getString(cursor.getColumnIndexOrThrow("date")));
-                    note.setText(cursor.getString(cursor.getColumnIndexOrThrow("note")));
-                    pr.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("priority")));
-                }
-            }
-        }
-        catch (Exception ex)
-        {
-           // Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+         configure_fields();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        configure_fields();
+    }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent imageReturnedIntent) {
         super.onActivityResult(requestCode, resultCode, imageReturnedIntent);
@@ -172,6 +140,45 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
             newevent();
         else
             save();
+    }
+    private void configure_fields()
+    {
+        try {
+            Bundle arg = getIntent().getExtras();
+            id_event = arg.getInt("id_event");
+            mode = arg.getInt("mode");
+            Toast.makeText(this, id_event + "", Toast.LENGTH_SHORT).show();
+            if (mode == 0) {
+                SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                        .findFragmentById(R.id.fragment_map);
+                mapFragment.getMapAsync(this);
+                title.setEnabled(false);
+                category.setEnabled(false);
+                lay_adress.setVisibility(View.GONE);
+                price.setEnabled(false);
+                date.setEnabled(false);
+                mapfragment.setVisibility(View.VISIBLE);
+                Button b = findViewById(R.id.buttonrgr);
+                b.setVisibility(View.VISIBLE);
+                SQLiteDatabase db = new DbHelper(getApplicationContext()).getReadableDatabase();
+                Cursor cursor = DbEvent.findbyid(db, id_event);
+                while (cursor.moveToNext()) {
+                    title.setText(cursor.getString(cursor.getColumnIndexOrThrow("title")));
+                    category.setText(cursor.getString(cursor.getColumnIndexOrThrow("category")));
+                    latitude = cursor.getDouble(cursor.getColumnIndexOrThrow("latitude"));
+                    longitude = cursor.getDouble(cursor.getColumnIndexOrThrow("longitude"));
+                    Log.d("e", "" + longitude);
+                    price.setText(cursor.getString(cursor.getColumnIndexOrThrow("price")));
+                    date.setText(cursor.getString(cursor.getColumnIndexOrThrow("date")));
+                    note.setText(cursor.getString(cursor.getColumnIndexOrThrow("note")));
+                    pr.setProgress(cursor.getInt(cursor.getColumnIndexOrThrow("priority")));
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            // Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
+        }
     }
     private void newevent(){
         Geocoder geocoder = new Geocoder(this);
@@ -247,6 +254,6 @@ public class AddActivity extends AppCompatActivity implements OnMapReadyCallback
             Toast.makeText(this, ex.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
-    //todo: меню с сортировкой и туда засунуть кнопку добавить, потом еще геокодер и мб картинки. а и сортировки на кнопочки
+    //todo: а и сортировки на кнопочки
 
 }

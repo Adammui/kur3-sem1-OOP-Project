@@ -29,7 +29,7 @@ public class DbEvent {
     }
 
     public static Cursor getAllByPriority(SQLiteDatabase db) {
-        return db.rawQuery("select * from " + DbHelper.Events_table + " order by priority asc", null);
+        return db.rawQuery("select * from " + DbHelper.Events_table + " order by priority desc", null);
     }
 
     public static Cursor getAllByTitle(SQLiteDatabase db) {

@@ -3,8 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/layout-land/activity_main.xml" value="0.22" />
         <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/layout/activity_add.xml" value="0.33" />
-        <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/layout/activity_home.xml" value="0.1" />
+        <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/layout/activity_home.xml" value="0.2" />
         <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/layout/activity_maps.xml" value="0.2557291666666667" />
         <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/layout/activity_show.xml" value="0.20520833333333333" />
@@ -14,6 +15,8 @@
         <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/layout/list_item.xml" value="0.20520833333333333" />
         <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/menu/context_menu.xml" value="0.3509259259259259" />
         <entry key="..\:/Users/Reyn/AndroidStudioProjects/OOP_Project/app/src/main/res/menu/menu.xml" value="0.3509259259259259" />
+        <entry key="..\:/tools/31m/labs/OOP_Project/app/src/main/res/layout/activity_add.xml" value="0.36666666666666664" />
+        <entry key="..\:/tools/31m/labs/OOP_Project/app/src/main/res/layout/activity_main.xml" value="0.36666666666666664" />
       </map>
     </option>
   </component>

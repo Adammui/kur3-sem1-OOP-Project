@@ -1,8 +1,6 @@
 package ast.bstu.oopproject;
 
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -53,13 +50,10 @@ public class MyAdapter extends BaseAdapter {
             view = lInflater.inflate(R.layout.list_item, parent, false);
         }
         Log.d("",pics.get(position));
-        Uri imageUri = Uri.parse(pics.get(position));
-        Bitmap bitmap = null;
         ((TextView) view.findViewById(R.id.text_item)).setText(objects.get(position));
         ((TextView) view.findViewById(R.id.text_id)).setText(ids.get(position));
         ((ImageView) view.findViewById(R.id.img)).setImageURI(Uri.parse(pics.get(position)));
 
-        LinearLayout l= view.findViewById(R.id.list_item);
 
         return view;
     }

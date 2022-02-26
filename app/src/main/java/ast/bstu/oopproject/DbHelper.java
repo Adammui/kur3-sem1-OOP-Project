@@ -50,19 +50,6 @@ public class DbHelper extends SQLiteOpenHelper {
         db.execSQL("INSERT INTO " + Events_table +
                 " ( title, imguri , category, address, latitude, longitude, price, date, note, priority) " +
                 " VALUES ('Сдача проекта по java','','учеба', 'Минск, БГТУ',53.891427, 27.5597439, 'мой сон', '2021/12/30', 'сдать до нг', 5 );");
-
-        /*db.execSQL("create table " + LOCATIONS_table + " (                           "
-                + "idtalon integer primary key autoincrement not null,       "
-                + "prof_name text not null,                                   "
-                + "iddoc integer not null,                                         "
-                + "town text not null,                                     "
-                + "time text not null,                                      "
-                + "analysis text not null,                                    "
-                // + "foreign key(prof_name) references " + PROFILE_TABLE + "(prof_name) "
-                // + " on delete cascade on update cascade,
-                + "foreign key(iddoc) references " + EVENTS_table + "(iddoc) "
-                + " on delete cascade on update cascade );"
-        );*/
     }
 
     @Override

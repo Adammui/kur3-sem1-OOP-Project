@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         titleList.clear();idList.clear();
 
         SQLiteDatabase db = new DbHelper(getApplicationContext()).getWritableDatabase();
-        Cursor cursor = DbEvent.getAll(db);
+        Cursor cursor = DbEvent.getAllByPriority(db);
         while (cursor.moveToNext()) {
             titleList.add(cursor.getString(cursor.getColumnIndexOrThrow("title")));
             idList.add(cursor.getString(cursor.getColumnIndexOrThrow("id_event")));
@@ -98,7 +98,7 @@ public class MainActivity extends AppCompatActivity {
     }
     @Override
     protected void onResume() {
-        super.onStart();
+        super.onResume();
         start();
     }
 private void start()
@@ -122,32 +122,8 @@ private void start()
 }
     public void add(View view)
     {
-        /*
-        sur=findViewById(R.id.surname);
-        name=findViewById(R.id.name);
-        gr=findViewById(R.id.radio);
-        M=findViewById(R.id.radioM); B=findViewById(R.id.radioB);G=findViewById(R.id.radioG);
-
-        if(gr.getCheckedRadioButtonId()!=-1 && !sur.getText().toString().isEmpty() && !name.getText().toString().isEmpty()) {
-            RadioButton r = findViewById(gr.getCheckedRadioButtonId());
-            town = r.getText().toString();*/
             Intent intent = new Intent(MainActivity.this, ast.bstu.oopproject.AddActivity.class);
-            /*intent.putExtra("town", town);
-            intent.putExtra("surname", sur.getText().toString());
-            intent.putExtra("name", name.getText().toString());
-
-            intent.putExtra("doc", doc );
-            intent.putExtra("docname", docname );
-            intent.putExtra("time", time );
-            intent.putExtra("analysis", analysis );*/
-
             startActivity(intent);
-            /*
-        }
-        else {
-            TextView r = findViewById(R.id.warn);
-            r.setVisibility(View.VISIBLE);
-        }*/
     }
     public void Notification(String date, String info){
         Intent intent = new Intent(getApplicationContext(),MainActivity.class);
@@ -169,9 +145,7 @@ private void start()
     public static void createChannelIfNeeded(NotificationManager manager) {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-
             NotificationChannel notificationChannel = new NotificationChannel(CHANNEL_ID, CHANNEL_ID, NotificationManager.IMPORTANCE_DEFAULT);
-
             manager.createNotificationChannel(notificationChannel);
 
         }
