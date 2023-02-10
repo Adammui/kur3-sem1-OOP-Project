@@ -9,8 +9,8 @@ Java mobile app (semester project for Пацей) local tracker of meetings. Con
 - Db SQLITE.
 # Screenshots:
 ### Create new note, opened note
-![image](https://user-images.githubusercontent.com/53793144/218092349-98953c61-46a4-450f-960d-2f369a426816.png)
-![image](https://user-images.githubusercontent.com/53793144/218094309-3e21d2d0-0b2c-4d77-9640-b35d1adc1df2.png)
+![image](https://user-images.githubusercontent.com/53793144/218094640-e06b9e89-0fb8-406d-9a39-87c4394e6c14.png)
+![image](https://user-images.githubusercontent.com/53793144/218094508-ac79e863-1b45-434e-9e8d-c3218ffa4ff8.png)
 ![image](https://user-images.githubusercontent.com/53793144/218092403-c955fe1b-46fd-4c2d-81b6-0b29f1d8d3bc.png)
 # RU
 # В проекте реализованы такие функции как:
